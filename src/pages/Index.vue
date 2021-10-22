@@ -1,27 +1,22 @@
-<template>
-  <q-page class="flex flex-center">
-    <img
-      alt="Quasar logo"
-      src="~assets/quasar-logo-vertical.svg"
-      style="width: 200px; height: 200px"
-    >
-    <q-btn label='notify as in documentation' @click='showNotif'/>
-    <q-btn label='notify from Alias' @click='showNotify2'/>
-  </q-page>
+<template lang="pug">
+q-page(padding)
+  q-btn(label='notfiy1' @click='notify')
+  q-btn(label='notfiy2' @click='showNotify2')
+  q-btn(label='notfiy3' @click='showNotify3')
 </template>
-
 <script>
-import { useQuasar } from 'quasar';
 import { defineComponent } from 'vue';
+import { Notify, useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'PageIndex',
+
   setup() {
     // from https://quasar.dev/quasar-plugins/notify
     const $q = useQuasar();
 
     return {
-      showNotif() {
+      notify() {
         $q.notify({
           message: 'Jim pinged you.',
           icon: 'announcement',
@@ -29,10 +24,16 @@ export default defineComponent({
       },
     };
   },
-
   methods: {
     showNotify2() {
       this.$q.notify({
+        message: 'Jim pinged you.',
+        icon: 'announcement',
+      });
+    },
+
+    showNotify3() {
+      Notify.create({
         message: 'Jim pinged you.',
         icon: 'announcement',
       });

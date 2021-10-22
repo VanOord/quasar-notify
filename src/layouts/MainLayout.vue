@@ -1,117 +1,106 @@
-<template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
+<template lang="pug">
+q-layout(view='lHh Lpr fFf')
+  q-header(elevated)
+    q-toolbar
+      q-btn(
+        flat
+        round
+        dense
+        icon='menu'
+        @click='leftDrawer = !leftDrawer'
+      )
+      q-toolbar-title
+        .lt-sm quasar-notify
+        q-breadcrumbs.gt-xs(
+          active-color='white'
+          style='font-size: 16px'
+        )
+          q-breadcrumbs-el(
+            icon='home'
+            label='quasar-notify'
+            to='/'
+          )
+      img(
+        src='~assets/vanoord-logo-white.svg'
+        height='40px'
+      )
+  q-drawer(
+    v-model='leftDrawer'
+    show-if-above
+    bordered
+    content-class='bg-grey-1'
+  )
+    q-scroll-area(style='height: calc(100% - 160px); margin-top: 160px;')
+      q-list(
+        v-for='(menuItem, index) in menuList'
+        :key='index'
+      )
+        template(v-if='hasPermissions(menuItem.roles)')
+          div(@click='() => {redirect(menuItem.link)}')
+            q-item(
+              v-ripple
+              clickable
+              active-class='bg-grey-4 text-black'
+              :active='menuItem.link === currentLink'
+            )
+              q-item-section(avatar)
+                q-icon(:name='menuItem.icon')
+              q-item-section {{ menuItem.label }}
+          q-separator(v-if='menuItem.separator')
+  q-page-container(v-if='appStatus=="error"')
+    .fixed-center.text-center
+      p
+        img(src='~assets/sad.svg', style='width:30vw;max-width:150px;')
+      p.text-faded
+        h2 Whoops, something went wrong loading the quasar-notify app!
+        p(v-if='appStatusDetails'): strong {{ appStatusDetails }}
+        p Please contact support
 
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
-      </q-toolbar>
-    </q-header>
-
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
-      <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
-
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
-      </q-list>
-    </q-drawer>
-
-    <q-page-container>
-      <router-view />
-    </q-page-container>
-  </q-layout>
+  q-page-container(v-else-if='!isLoading')
+    router-view
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink.vue';
-
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev',
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev',
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev',
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev',
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev',
-  },
-];
-
-import { defineComponent, ref } from 'vue';
+import { mapGetters } from 'vuex'
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'MainLayout',
 
-  components: {
-    EssentialLink,
-  },
-
-  setup() {
-    const leftDrawerOpen = ref(false);
-
+  data() {
     return {
-      essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value;
-      },
+      leftDrawer: false,
+      isLoading: false,
     };
   },
+
+  computed: {
+    ...mapGetters({
+      appStatus: 'app/status',
+      appStatusDetails: 'app/statusDetails',
+    }),
+    menuList() {
+      return [
+        {
+          icon: 'list', label: 'Home', link: '/', separator: false,
+        },
+      ]
+    },
+    userRoles() {
+      return this.$store.getters['user/roles'](this.groupId)
+    },
+    currentLink() {
+      return this.$route.path;
+    },
+  },
+
+  methods: {
+    hasPermissions(roles) {
+      return roles === undefined || this.userRoles.filter(o => roles.includes(o)).length > 0;
+    },
+
+    redirect(link) { this.$router.push(link) },
+  },
+
 });
 </script>

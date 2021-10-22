@@ -1,9 +1,9 @@
 {
-  "name": "quasar-test",
+  "name": "quasar-notify",
   "version": "0.0.1",
   "description": "A Quasar Framework app",
-  "productName": "Quasar App",
-  "author": "Pieter van Halem <pietervanhalem@hotmail.com>",
+  "productName": "quasar-notify",
+  "author": "Piet Zaalberg",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue ./",
@@ -12,18 +12,24 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
+    "cal-heatmap": "^3.6.2",
     "core-js": "^3.6.5",
+    "date-fns": "^2.25.0",
+    "ol": "^6.9.0",
     "quasar": "^2.0.0",
+    "vue3-chart-v2": "^0.8.3",
     "vuex": "^4.0.1"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
     "@quasar/app": "^3.0.0",
-    "eslint": "^7.14.0",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.20.1",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-vue": "^7.0.0",
-    "eslint-webpack-plugin": "^2.4.0"
+    "eslint-webpack-plugin": "^2.4.0",
+    "pug": "^3.0.2",
+    "pug-plain-loader": "^1.1.0"
   },
   "browserslist": [
     "last 10 Chrome versions",
